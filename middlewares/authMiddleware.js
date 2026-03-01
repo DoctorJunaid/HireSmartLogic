@@ -32,6 +32,17 @@ const verifyToken = (req, res, next) => {
 
 
 
+const verifyAdmin = (req, res, next) => {
+  verifyToken(req, res, () => {
+    if (req.user && req.user.role === 'admin') {
+      next();
+    } else {
+      return res.status(403).json({ msg: "Access denied: Admin only" });
+    }
+  });
+};
+
 export {
   verifyToken,
+  verifyAdmin,
 };

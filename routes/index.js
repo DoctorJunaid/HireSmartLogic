@@ -11,6 +11,7 @@ import orderRoutes from "./orderRoutes.js";
 import messageRoutes from "./messageRoutes.js";
 import reviewRoutes from "./reviewRoutes.js";
 import workerAdRoutes from "./workerAdRoutes.js";
+import adminRoutes from "./adminRoutes.js";
 
 // Public or protected routes
 router.use("/api/users", userRoutes);
@@ -21,6 +22,7 @@ router.use("/api/orders", orderRoutes);
 router.use("/api/messages", messageRoutes);
 router.use("/api/reviews", reviewRoutes);
 router.use("/api/ads", workerAdRoutes);
+router.use("/api/admin", adminRoutes);
 router.use("/", appRoutes);
 
 export default router;
