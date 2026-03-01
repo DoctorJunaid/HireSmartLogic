@@ -96,6 +96,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    is_profile_approved: {
+      type: Boolean,
+      default: false,
+    },
     is_phone_verified: {
       type: Boolean,
       default: false,

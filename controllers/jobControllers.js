@@ -1,5 +1,6 @@
 import Job from "../models/Job.js";
 import User from "../models/User.js";
+import Offer from "../models/Offer.js";
 
 // @desc    Customer creates a new job
 // @route   POST /api/jobs
@@ -145,10 +146,23 @@ export const getJobDetailsController = async (req, res) => {
             return res.status(404).json({ isStatus: false, msg: "Job not found" });
         }
 
+        let metadata = {};
+        if (req.user.role === "worker") {
+            const offer = await Offer.findOne({ job_id: job._id, worker_id: req.user.id });
+            if (offer) {
+                metadata.has_offered = true;
+                metadata.offer_id = offer._id;
+                metadata.offer_status = offer.status;
+            } else {
+                metadata.has_offered = false;
+            }
+        }
+
         res.status(200).json({
             isStatus: true,
             msg: "Job details fetched",
-            data: job
+            data: job,
+            metadata
         });
     } catch (error) {
         console.error("Get Job Details Error:", error);

@@ -1,5 +1,7 @@
 import Message from "../models/Message.js";
 import Order from "../models/Order.js";
+import Offer from "../models/Offer.js";
+import Job from "../models/Job.js";
 import { EventEmitter } from "events";
 import mongoose from "mongoose";
 
@@ -22,16 +24,31 @@ export const sendMessageController = async (req, res) => {
             return res.status(400).json({ isStatus: false, msg: "Message content is empty" });
         }
 
-        // Validate that sender and receiver are actually part of an active/completed order for this job
-        const order = await Order.findOne({ job_id });
-        if (!order) {
-            return res.status(404).json({ isStatus: false, msg: "Order not found for this job" });
+        // Validate that sender and receiver are authorized to message each other
+        const job = await Job.findById(job_id);
+        if (!job) {
+            return res.status(404).json({ isStatus: false, msg: "Job not found" });
         }
 
-        const isAuthorizedParticipant = (
-            (order.customer_id.toString() === sender_id && order.worker_id.toString() === receiver_id) ||
-            (order.worker_id.toString() === sender_id && order.customer_id.toString() === receiver_id)
-        );
+        let isAuthorizedParticipant = false;
+
+        const customerId = job.customer_id.toString();
+        let workerId = null;
+
+        if (sender_id === customerId) {
+            workerId = receiver_id;
+        } else if (receiver_id === customerId) {
+            workerId = sender_id;
+        }
+
+        if (workerId) {
+            // check if there's an Order or Offer between them for this job
+            const offerCount = await Offer.countDocuments({ job_id, worker_id: workerId });
+            if (offerCount > 0) isAuthorizedParticipant = true;
+
+            const orderCount = await Order.countDocuments({ job_id, worker_id: workerId });
+            if (orderCount > 0) isAuthorizedParticipant = true;
+        }
 
         if (!isAuthorizedParticipant) {
             return res.status(403).json({ isStatus: false, msg: "Not authorized to message this user for this job" });
@@ -49,12 +66,15 @@ export const sendMessageController = async (req, res) => {
 
         const message = await Message.create(msgData);
 
-        // Also push to order embedded document for redundancy/easy fetch, if desired by architecture
-        order.messages.push({
-            sender_id,
-            text: text_content || "[Media Content]"
-        });
-        await order.save();
+        // Also push to order embedded document if order exists
+        const order = await Order.findOne({ job_id, worker_id: workerId });
+        if (order) {
+            order.messages.push({
+                sender_id,
+                text: text_content || "[Media Content]"
+            });
+            await order.save();
+        }
 
         // Emit event for real-time SSE updates
         messageEmitter.emit(`newMessage_${job_id}`, message);
@@ -81,17 +101,24 @@ export const getMessagesController = async (req, res) => {
         const { jobId } = req.params;
         const userId = req.user.id;
 
-        const order = await Order.findOne({ job_id: jobId });
-        if (!order) {
-            return res.status(404).json({ isStatus: false, msg: "Order not found for this job" });
+        const otherUserId = req.query.other_user_id;
+
+        if (!otherUserId) {
+            return res.status(400).json({ isStatus: false, msg: "other_user_id query param is required" });
         }
 
-        if (order.customer_id.toString() !== userId && order.worker_id.toString() !== userId) {
-            return res.status(403).json({ isStatus: false, msg: "Not authorized to view these messages" });
+        const job = await Job.findById(jobId);
+        if (!job) {
+            return res.status(404).json({ isStatus: false, msg: "Job not found" });
         }
 
-        const messages = await Message.find({ job_id: jobId })
-            .sort({ createdAt: 1 }); // Oldest first for chat UI
+        const messages = await Message.find({
+            job_id: jobId,
+            $or: [
+                { sender_id: userId, receiver_id: otherUserId },
+                { sender_id: otherUserId, receiver_id: userId }
+            ]
+        }).sort({ createdAt: 1 }); // Oldest first for chat UI
 
         // Mark unread messages as read
         const unreadIds = messages.filter(m => !m.is_read && m.sender_id.toString() !== userId).map(m => m._id);
@@ -121,10 +148,15 @@ export const getMessageStreamController = async (req, res) => {
         const { jobId } = req.params;
         const userId = req.user.id;
 
-        // Verify order access
-        const order = await Order.findOne({ job_id: jobId });
-        if (!order || (order.customer_id.toString() !== userId && order.worker_id.toString() !== userId)) {
-            return res.status(403).json({ isStatus: false, msg: "Not authorized to view messages" });
+        const otherUserId = req.query.other_user_id;
+
+        if (!otherUserId) {
+            return res.status(400).json({ isStatus: false, msg: "other_user_id query param is required" });
+        }
+
+        const job = await Job.findById(jobId);
+        if (!job) {
+            return res.status(404).json({ isStatus: false, msg: "Job not found" });
         }
 
         // Set headers for SSE

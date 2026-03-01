@@ -26,6 +26,15 @@ const orderSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
+        inspection_type: {
+            type: String,
+            enum: ["free", "paid"],
+            default: null
+        },
+        inspection_fee: {
+            type: Number,
+            default: 0
+        },
         rating: {
             type: Number,
             min: 1,

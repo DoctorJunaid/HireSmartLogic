@@ -163,7 +163,9 @@ export const acceptOfferController = async (req, res) => {
             customer_id: job.customer_id,
             worker_id: offer.worker_id,
             status: "active",
-            total_price: offer.offered_price
+            total_price: offer.offered_price,
+            inspection_type: offer.inspection_type,
+            inspection_fee: offer.inspection_fee || 0
         });
 
         res.status(200).json({

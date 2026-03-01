@@ -123,3 +123,7 @@ export const sendMessageController = async (req, res) => {
         res.status(500).json({ isStatus: false, msg: error.message || "Server Error" });
     }
 };
+
+export const createBookingController = (req, res) => {
+    res.status(501).json({ isStatus: false, msg: "Moved to bookingControllers.js" });
+};

@@ -2,6 +2,10 @@
   "name": "hiresmartlogic",
   "module": "server.js",
   "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
