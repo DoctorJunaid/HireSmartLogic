@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const offerSchema = new mongoose.Schema(
   {
@@ -19,13 +19,13 @@ const offerSchema = new mongoose.Schema(
       required: true, // The initial price the worker asks for
     },
     inspection_type: {
-        type: String,
-        enum: ["free", "paid"],
-        default: null
+      type: String,
+      enum: ["free", "paid"],
+      default: null
     },
     inspection_fee: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0
     },
     cover_note: {
       type: String,
@@ -42,4 +42,4 @@ const offerSchema = new mongoose.Schema(
 );
 
 const Offer = mongoose.model("Offer", offerSchema);
-module.exports = Offer;
+export default Offer;

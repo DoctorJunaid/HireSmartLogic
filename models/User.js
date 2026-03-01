@@ -1,10 +1,9 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
     full_name: {
       type: String,
-      required: true,
       trim: true,
     },
     email: {
@@ -30,12 +29,17 @@ const userSchema = new mongoose.Schema(
       index: true,
       sparse: true,
     },
+    authType: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
+    },
     phone_number: {
       type: String,
       unique: true,
       index: true,
-      sparse: true, // Prevents duplicate errors if a user signs up via Google and has no phone number yet
-      match: /^(?:\+92|0)3\d{9}$/,
+      sparse: true,
+      match: /^(\+92|0)?3\d{9}$/,
     },
     verificationToken: {
       type: String,
@@ -45,40 +49,63 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    passwordResetOtp: {
+      type: String,
+      default: null,
+    },
+    passwordResetOtpExpires: {
+      type: Date,
+      default: null,
+    },
     role: {
       type: String,
       enum: ["customer", "worker", "admin"],
-      required: true,
+      default: "customer",
     },
-    is_profile_approved: {
-      type: Boolean, default: false
-    },
-    is_phone_verified: {
-      type: Boolean,
-      default: false
-    },
-    is_email_verified:
-    {
-      type: Boolean,
-      default: false
-    },
-    cnic_number: {
-      type: String,
-      required: function () {
-        return this.role === "worker";
-      },
-      unique: true,
-      sparse: true,
-      match: /^[0-9]{5}-[0-9]{7}-[0-9]$/, // Validates standard format: 12345-1234567-1
-      select: false,
+    rating_sum: {
+      type: Number,
+      default: 0,
     },
     rating_count: {
       type: Number,
       default: 0,
     },
-    rating_sum: {
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    username: {
+      type: String,
+      unique: true,
+      index: true,
+      sparse: true,
+    },
+    address: {
+      type: String,
+      trim: true,
+    },
+    gender: {
+      type: String,
+      enum: ['male', 'female', 'other'],
+    },
+    age: {
       type: Number,
-      default: 0,
+      min: 16,
+    },
+    needsProfileCompletion: {
+      type: Boolean,
+      default: false,
+    },
+    is_phone_verified: {
+      type: Boolean,
+      default: false,
+    },
+    cnic_number: {
+      type: String,
+      unique: true,
+      sparse: true,
+      match: /^[0-9]{5}-[0-9]{7}-[0-9]$/,
+      select: false,
     },
     profile_photo_url: {
       type: String,
@@ -109,4 +136,4 @@ userSchema.virtual("average_rating").get(function () {
 });
 
 const User = mongoose.model("User", userSchema);
-module.exports = User;
+export default User;

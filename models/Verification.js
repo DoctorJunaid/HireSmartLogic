@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const verificationSchema = new mongoose.Schema(
   {
@@ -14,7 +14,11 @@ const verificationSchema = new mongoose.Schema(
     },
     cnic_back_image_url: {
       type: String,
-      required: true, 
+      required: true,
+    },
+    selfie_image_url: {
+      type: String,
+      required: true,
     },
     status: {
       type: String,
@@ -40,4 +44,4 @@ const verificationSchema = new mongoose.Schema(
 );
 
 const Verification = mongoose.model("Verification", verificationSchema);
-module.exports = Verification;
+export default Verification;

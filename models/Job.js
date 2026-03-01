@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const jobSchema = new mongoose.Schema({
   customer_id: {
@@ -57,7 +57,7 @@ const jobSchema = new mongoose.Schema({
   initial_budget: {
     type: Number,
     // Only require an initial budget if the customer selected "fixed" pricing
-    required: function() { return this.pricing_mode === "fixed"; }
+    required: function () { return this.pricing_mode === "fixed"; }
   },
   final_agreed_price: {
     type: Number,
@@ -94,4 +94,4 @@ const jobSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const Job = mongoose.model("Job", jobSchema);
-module.exports = Job;
+export default Job;

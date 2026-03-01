@@ -1,22 +1,22 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const categorySchema = new mongoose.Schema(
   {
-    name: { 
-      type: String, 
-      required: true, 
+    name: {
+      type: String,
+      required: true,
       unique: true,
       trim: true // e.g., "Plumbing", "AC Repair"
     },
-    icon_url: { 
-      type: String, 
+    icon_url: {
+      type: String,
       required: true // URL to the category image/icon shown on the home screen
     },
-    description: { 
-      type: String 
+    description: {
+      type: String
     },
-    is_active: { 
-      type: Boolean, 
+    is_active: {
+      type: Boolean,
       default: true // Admin can disable a category without deleting it
     },
     base_price_guideline: {
@@ -27,4 +27,4 @@ const categorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Category", categorySchema);
+export default mongoose.model("Category", categorySchema);
