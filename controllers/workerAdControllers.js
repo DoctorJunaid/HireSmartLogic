@@ -69,8 +69,26 @@ const getWorkerAdsController = async (req, res) => {
     }
 };
 
+// Get single ad by ID
+const getAdByIdController = async (req, res) => {
+    try {
+        const ad = await WorkerAd.findById(req.params.id)
+            .populate("worker_id", "full_name profile_photo_url rating_sum rating_count phone_number")
+            .populate("category_ids", "name");
+
+        if (!ad) {
+            return res.status(404).json({ isStatus: false, msg: "Ad not found" });
+        }
+
+        res.status(200).json({ isStatus: true, data: ad });
+    } catch (error) {
+        res.status(500).json({ isStatus: false, msg: error.message });
+    }
+};
+
 export {
     createWorkerAdController,
     getMyAdsController,
-    getWorkerAdsController
+    getWorkerAdsController,
+    getAdByIdController
 };

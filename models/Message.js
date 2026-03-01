@@ -2,10 +2,15 @@ import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema(
   {
+    // Support both job-based and ad-based conversations
     job_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Job",
-      required: true,
+      index: true,
+    },
+    ad_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "WorkerAd",
       index: true,
     },
     sender_id: {
@@ -20,16 +25,16 @@ const messageSchema = new mongoose.Schema(
     },
     message_type: {
       type: String,
-      enum: ["text", "image", "voice"], // Tells the frontend how to render the message
+      enum: ["text", "image", "voice"],
       default: "text",
     },
     text_content: {
       type: String,
-      default: "", // Used if message_type is "text"
+      default: "",
     },
     media_url: {
       type: String,
-      default: null, // Holds the Cloudinary URL if message_type is "image" or "voice"
+      default: null,
     },
     is_read: {
       type: Boolean,
@@ -38,6 +43,14 @@ const messageSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// At least one context must be provided
+messageSchema.pre('validate', function (next) {
+  if (!this.job_id && !this.ad_id) {
+    return next(new Error('Either job_id or ad_id is required'));
+  }
+  next();
+});
 
 const Message = mongoose.model("Message", messageSchema);
 export default Message;

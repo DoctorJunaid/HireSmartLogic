@@ -3,16 +3,18 @@ import { verifyToken as authenticate } from "../middlewares/authMiddleware.js";
 import {
     createWorkerAdController,
     getMyAdsController,
-    getWorkerAdsController
+    getWorkerAdsController,
+    getAdByIdController
 } from "../controllers/workerAdControllers.js";
 
 const router = express.Router();
 
-// General browse
+// Static routes first (before :id param catch-all)
 router.get("/browse", getWorkerAdsController);
-
-// Authenticated worker actions
-router.post("/post-ad", authenticate, createWorkerAdController);
 router.get("/my-ads", authenticate, getMyAdsController);
+router.post("/post-ad", authenticate, createWorkerAdController);
+
+// Dynamic route last
+router.get("/:id", getAdByIdController);
 
 export default router;
