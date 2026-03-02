@@ -24,12 +24,16 @@ const createUserController = async (req, res) => {
       });
     }
 
-    // Clean up unverified expired accounts with same email
-    await User.deleteMany({
-      email,
+    // Clean up unverified expired accounts with same email, phone or cnic
+    const cleanupQuery = {
       isVerified: false,
       verificationTokenExpires: { $lt: Date.now() },
-    });
+      $or: [{ email }]
+    };
+    if (phone_number) cleanupQuery.$or.push({ phone_number });
+    if (cnic_number) cleanupQuery.$or.push({ cnic_number });
+
+    await User.deleteMany(cleanupQuery);
 
     const result = await userServices.createUser({ full_name, email, password, role, phone_number, cnic_number, address, gender, age });
 
@@ -43,6 +47,14 @@ const createUserController = async (req, res) => {
       return res
         .status(409)
         .json({ isStatus: false, msg: error.message, data: null });
+    }
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyValue)[0];
+      return res.status(409).json({
+        isStatus: false,
+        msg: `${field.replace('_', ' ')} is already in use.`,
+        data: null,
+      });
     }
     res.status(500).json({
       isStatus: false,
@@ -70,6 +82,13 @@ const updateUserController = async (req, res) => {
       .status(200)
       .json({ isStatus: true, msg: "Updated successfully", data: user });
   } catch (error) {
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyValue)[0];
+      return res.status(409).json({
+        isStatus: false,
+        msg: `${field.replace('_', ' ')} is already in use.`,
+      });
+    }
     res
       .status(500)
       .json({ isStatus: false, msg: error.message || "Internal Server Error" });
@@ -429,6 +448,13 @@ const completeProfileController = async (req, res) => {
       },
     });
   } catch (error) {
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyValue)[0];
+      return res.status(409).json({
+        isStatus: false,
+        msg: `${field.replace('_', ' ')} is already in use.`,
+      });
+    }
     res.status(500).json({
       isStatus: false,
       msg: error.message || "Internal Server Error",

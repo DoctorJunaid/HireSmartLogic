@@ -52,11 +52,18 @@ const reset = async (userId, password) => {
 const createUser = async ({ email, password, role = 'customer', phone_number, cnic_number, full_name, address, gender, age }) => {
   const existingUser = await User.findOne({ email });
 
-  if (existingUser) throw new Error("User already exists");
+  if (existingUser) {
+    if (existingUser.isVerified) {
+      throw new Error("User already exists");
+    } else {
+      // Remove old unverified record to allow fresh sign-up
+      await User.deleteOne({ _id: existingUser._id });
+    }
+  }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  // Generate 6-digit OTP for email verification
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  // Generate 4-digit OTP for email verification
+  const otp = Math.floor(1000 + Math.random() * 9000).toString();
   const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
 
   const userData = {
@@ -109,8 +116,8 @@ const forgotPassword = async (email) => {
   const user = await User.findOne({ email });
   if (!user) throw new Error("User not found");
 
-  // Generate 6-digit OTP for password reset
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  // Generate 4-digit OTP for password reset
+  const otp = Math.floor(1000 + Math.random() * 9000).toString();
   const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
 
   await User.findOneAndUpdate(
