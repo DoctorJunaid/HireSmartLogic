@@ -7,118 +7,67 @@ const sendVerificationTemplate = (verificationToken) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Verify Your Email — HireSmart</title>
 </head>
-<body style="margin:0;padding:0;background-color:#0d0d12;font-family:'Segoe UI',Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#0d0d12;padding:40px 16px;">
+<body style="margin:0;padding:0;background-color:#f4f7fa;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f7fa;padding:40px 16px;">
     <tr>
       <td align="center">
-        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
-
-          <!-- Logo / Header -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background-color:#ffffff;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.05);overflow:hidden;">
+          
+          <!-- Header -->
           <tr>
-            <td align="center" style="padding-bottom:32px;">
-              <table cellpadding="0" cellspacing="0">
-                <tr>
-                  <td style="background:linear-gradient(135deg,#2a9cff,#0c7be8);border-radius:16px;padding:12px 24px;">
-                    <span style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;">Hire<span style="color:#bde0ff;">Smart</span></span>
-                  </td>
-                </tr>
-              </table>
+            <td align="center" style="background-color:#ffffff;padding:32px 0 24px;border-bottom:1px solid #eaebed;">
+              <span style="font-size:28px;font-weight:700;color:#0f172a;letter-spacing:-0.5px;">Hire<span style="color:#2563eb;">Smart</span></span>
             </td>
           </tr>
 
-          <!-- Card -->
+          <!-- Body -->
           <tr>
-            <td style="background-color:#1a1b25;border-radius:20px;padding:40px 36px;border:1px solid #272835;">
-
-              <!-- Icon -->
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td align="center" style="padding-bottom:24px;">
-                    <div style="width:64px;height:64px;background:linear-gradient(135deg,#1a3020,#184e44);border-radius:50%;display:inline-block;text-align:center;line-height:64px;font-size:28px;">✉️</div>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Title -->
-              <h1 style="margin:0 0 8px;font-size:22px;font-weight:700;color:#ffffff;text-align:center;letter-spacing:-0.3px;">
-                Verify Your Email
+            <td style="padding:40px 48px;">
+              <h1 style="margin:0 0 16px;font-size:24px;font-weight:600;color:#1e293b;text-align:center;">
+                Verify your email address
               </h1>
-              <p style="margin:0 0 28px;font-size:14px;color:#818898;text-align:center;line-height:22px;">
-                Welcome to HireSmart! 🎉<br>
-                Copy the verification token below and paste it in the app to activate your account.
+              <p style="margin:0 0 32px;font-size:16px;color:#475569;text-align:center;line-height:24px;">
+                Thank you for signing up for HireSmart. To complete your registration and activate your account, please use the verification code below.
               </p>
 
               <!-- Token Box -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
                 <tr>
                   <td align="center">
-                    <div style="background:linear-gradient(135deg,#0f2033,#0c1e30);border:1px solid #2a9cff;border-radius:14px;padding:24px 40px;display:inline-block;">
-                      <p style="margin:0 0 6px;font-size:11px;color:#818898;letter-spacing:2px;text-transform:uppercase;text-align:center;">Your Verification Code</p>
-                      <p style="margin:0;font-size:48px;font-weight:700;color:#2a9cff;letter-spacing:12px;text-align:center;line-height:60px;">${verificationToken}</p>
+                    <div style="background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:24px 40px;display:inline-block;">
+                      <p style="margin:0;font-size:36px;font-weight:700;color:#0f172a;letter-spacing:8px;text-align:center;">
+                        ${verificationToken}
+                      </p>
                     </div>
                   </td>
                 </tr>
               </table>
 
-              <!-- Steps -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
-                <tr>
-                  <td style="background-color:#141920;border:1px solid #272835;border-radius:12px;padding:20px 20px;">
-                    <p style="margin:0 0 12px;font-size:13px;font-weight:600;color:#c1c7d0;">How to verify:</p>
-                    <table cellpadding="0" cellspacing="0" width="100%">
-                      <tr>
-                        <td style="padding:4px 0;">
-                          <span style="display:inline-block;width:20px;height:20px;background:#2a9cff;border-radius:50%;text-align:center;line-height:20px;font-size:11px;color:#fff;font-weight:700;margin-right:8px;">1</span>
-                          <span style="font-size:13px;color:#818898;">Open the HireSmart app</span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style="padding:4px 0;">
-                          <span style="display:inline-block;width:20px;height:20px;background:#2a9cff;border-radius:50%;text-align:center;line-height:20px;font-size:11px;color:#fff;font-weight:700;margin-right:8px;">2</span>
-                          <span style="font-size:13px;color:#818898;">Go to Verify Email screen</span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style="padding:4px 0;">
-                          <span style="display:inline-block;width:20px;height:20px;background:#2a9cff;border-radius:50%;text-align:center;line-height:20px;font-size:11px;color:#fff;font-weight:700;margin-right:8px;">3</span>
-                          <span style="font-size:13px;color:#818898;">Paste the token above and tap Verify</span>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Warning -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
-                <tr>
-                  <td style="background-color:#1e1510;border:1px solid #5c3d1f;border-radius:10px;padding:14px 18px;">
-                    <p style="margin:0;font-size:13px;color:#ffbe4c;line-height:20px;">
-                      ⏱ &nbsp;This token expires in <strong>24 hours</strong>. Do not share it with anyone.
-                    </p>
-                  </td>
-                </tr>
-              </table>
+              <p style="margin:0 0 24px;font-size:15px;color:#475569;text-align:center;line-height:24px;">
+                Enter this code in the HireSmart app to verify your identity. This code will expire in <strong>24 hours</strong>.
+              </p>
 
               <!-- Divider -->
-              <hr style="border:none;border-top:1px solid #272835;margin:0 0 24px;">
+              <hr style="border:none;border-top:1px solid #e2e8f0;margin:32px 0;">
 
-              <!-- Footer note -->
-              <p style="margin:0;font-size:12px;color:#666d80;text-align:center;line-height:20px;">
-                If you didn't create a HireSmart account, you can safely ignore this email.
+              <!-- Footer Note -->
+              <p style="margin:0;font-size:14px;color:#64748b;text-align:center;line-height:22px;">
+                If you did not attempt to sign up for a HireSmart account, please disregard this email.
               </p>
             </td>
           </tr>
+        </table>
 
-          <!-- Bottom footer -->
+        <!-- Outer Footer -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;">
           <tr>
-            <td align="center" style="padding-top:28px;">
-              <p style="margin:0;font-size:12px;color:#36394a;">
-                © ${new Date().getFullYear()} HireSmart. All rights reserved.
+            <td align="center" style="padding:24px 0;">
+              <p style="margin:0;font-size:13px;color:#94a3b8;line-height:20px;">
+                © ${new Date().getFullYear()} HireSmart. All rights reserved.<br>
+                This is an automated message, please do not reply.
               </p>
             </td>
           </tr>
-
         </table>
       </td>
     </tr>
