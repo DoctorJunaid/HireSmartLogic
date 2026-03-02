@@ -462,6 +462,35 @@ const completeProfileController = async (req, res) => {
   }
 };
 
+// Resend verification OTP controller
+const resendVerificationOtpController = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ isStatus: false, msg: "Email is required" });
+    }
+
+    await userServices.resendVerificationOtp(email);
+
+    res.status(200).json({
+      isStatus: true,
+      msg: "Verification code resent successfully",
+      data: null,
+    });
+  } catch (error) {
+    if (error.message === "User not found") {
+      return res.status(404).json({ isStatus: false, msg: error.message });
+    }
+    if (error.message === "Email is already verified") {
+      return res.status(400).json({ isStatus: false, msg: error.message });
+    }
+    res.status(500).json({
+      isStatus: false,
+      msg: error.message || "Internal Server Error",
+    });
+  }
+};
+
 export {
   createUserController,
   updateUserController,
@@ -477,4 +506,5 @@ export {
   uploadCnicController,
   completeProfileController,
   getVerificationStatusController,
+  resendVerificationOtpController,
 };

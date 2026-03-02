@@ -16,6 +16,7 @@ import {
   uploadCnicController,
   completeProfileController,
   getVerificationStatusController,
+  resendVerificationOtpController,
 } from "../controllers/userControllers.js";
 import { googleMobileController } from "../controllers/googleMobileController.js";
 import { otpRateLimiter } from "../middlewares/rateLimitMiddleware.js";
@@ -37,6 +38,7 @@ router.post("/forgot-password", otpRateLimiter, forgotPasswordController);
 // Verification
 router.get("/verify-email", otpRateLimiter, verifyEmailController);   // web fallback
 router.post("/verify-email", otpRateLimiter, verifyEmailController);  // mobile (token in body)
+router.post("/resend-otp", otpRateLimiter, resendVerificationOtpController);  // resend verification code
 
 // Protected routes (require JWT)
 router.get("/me", verifyToken, getProfileController);

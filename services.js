@@ -85,10 +85,12 @@ const createUser = async ({ email, password, role = 'customer', phone_number, cn
 
   const subject = "Your HireSmart Verification Code";
   const message = `Your HireSmart verification code is: ${otp}. It expires in 24 hours.`;
-  // Send email in the background so it doesn't block the API response
-  sendVerificationMail(email, subject, message, otp).catch((err) => {
+  // Await the email so it completes before serverless function terminates
+  try {
+    await sendVerificationMail(email, subject, message, otp);
+  } catch (err) {
     console.error("Verification email failed:", err.message);
-  });
+  }
 
   return {
     user: {
@@ -130,15 +132,42 @@ const forgotPassword = async (email) => {
 
   const subject = "Your HireSmart Password Reset Code";
   const message = `Your HireSmart password reset code is: ${otp}. It expires in 15 minutes.`;
-  // Send email in background without blocking response
-  sendMail(email, subject, message, otp).catch((err) => {
+  // Await the email so it completes before serverless function terminates
+  try {
+    await sendMail(email, subject, message, otp);
+  } catch (err) {
     console.error("password reset email failed:", err.message);
-  });
+  }
 
   return true;
 };
 
+// Resend verification OTP for unverified users
+const resendVerificationOtp = async (email) => {
+  const user = await User.findOne({ email });
+  if (!user) throw new Error("User not found");
+  if (user.isVerified) throw new Error("Email is already verified");
 
+  // Generate new 4-digit OTP
+  const otp = Math.floor(1000 + Math.random() * 9000).toString();
+  const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+
+  user.verificationToken = hashedOtp;
+  user.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
+  await user.save();
+
+  const subject = "Your HireSmart Verification Code";
+  const message = `Your HireSmart verification code is: ${otp}. It expires in 24 hours.`;
+
+  try {
+    await sendVerificationMail(email, subject, message, otp);
+  } catch (err) {
+    console.error("Resend verification email failed:", err.message);
+    throw new Error("Failed to send verification email. Please try again.");
+  }
+
+  return true;
+};
 
 const verifyEmail = async (otp) => {
   const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
@@ -245,4 +274,5 @@ export {
   updateProfileImage,
   updateCnicImages,
   completeProfile,
+  resendVerificationOtp,
 };
