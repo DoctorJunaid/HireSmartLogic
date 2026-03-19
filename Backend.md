@@ -100,3 +100,7 @@ Global Error Middleware: A centralized Express error handler to catch 404, 500, 
 Input Validation: Use a library like Joi or Zod to validate all incoming data (phone numbers, price amounts, coordinates) before it hits the database.
 
 Would you like to start by writing the Express server entry point (index.js) and the database connection utility?
+---
+
+⚠️ **DEPRECATED** - This document is outdated. The backend API is being updated to support the new separate customer and worker applications.
+
